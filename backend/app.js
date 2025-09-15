@@ -17,7 +17,10 @@ const apiRouter = require('./routes/api'); // API endpoints for multi-tenant Sho
 const app = express();
 
 // Enable CORS so frontend can access API
-app.use(cors());
+app.use(cors({
+  origin: "https://shopify-insights-app-miy7.onrender.com", // your frontend URL
+  methods: ["GET", "POST", "PUT", "DELETE"]
+}));
 
 // Logging middleware
 app.use(logger('dev'));
