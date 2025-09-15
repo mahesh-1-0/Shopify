@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Tenant {
+  id              Int       @id @default(autoincrement())
+  name            String
+  apiKey          String    @unique
+  shopifyDomain   String?   @unique
+  accessToken     String?
+  webhookSecret   String?
+  customers       Customer[]
+  products        Product[]
+  orders          Order[]
+  customEvents    CustomEvent[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Customer {
+  id              Int       @id @default(autoincrement())
+  tenantId        Int
+  tenant          Tenant    @relation(fields: [tenantId], references: [id])
+  shopifyId       String    @unique
+  name            String
+  email           String
+  phone           String?
+  totalSpent      Float     @default(0)
+  ordersCount     Int       @default(0)
+  state           String?   // active, disabled, etc.
+  orders          Order[]
+  customEvents    CustomEvent[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Product {
+  id              Int       @id @default(autoincrement())
+  tenantId        Int
+  tenant          Tenant    @relation(fields: [tenantId], references: [id])
+  shopifyId       String    @unique
+  title           String
+  price           Float
+  compareAtPrice  Float?
+  sku             String?
+  inventory       Int?
+  status          String?   // active, archived, draft
+  productType     String?
+  vendor          String?
+  tags            String?
+  imageUrl        String?
+
+  /// Many-to-many relation with Order
+  orders          Order[]   @relation("OrderProducts")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Order {
+  id              Int       @id @default(autoincrement())
+  tenantId        Int
+  tenant          Tenant    @relation(fields: [tenantId], references: [id])
+  shopifyId       String    @unique
+  customerId      Int
+  customer        Customer  @relation(fields: [customerId], references: [id])
+  orderNumber     String?
+  financialStatus String?   // pending, paid, partially_paid, refunded, etc.
+  fulfillmentStatus String? // fulfilled, null, partial, restocked
+  currency        String    @default("USD")
+  subtotal        Float
+  totalTax        Float     @default(0)
+  totalDiscounts  Float     @default(0)
+  total           Float
+  shippingCost    Float     @default(0)
+  processedAt     DateTime?
+  cancelledAt     DateTime?
+  closedAt        DateTime?
+
+  /// Many-to-many relation with Product
+  products        Product[] @relation("OrderProducts")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model CustomEvent {
+  id              Int       @id @default(autoincrement())
+  tenantId        Int
+  tenant          Tenant    @relation(fields: [tenantId], references: [id])
+  customerId      Int?
+  customer        Customer? @relation(fields: [customerId], references: [id])
+  eventType       String    // cart_abandoned, checkout_started, product_viewed, etc.
+  eventData       Json?     // Additional event-specific data
+  value           Float?    // Monetary value if applicable
+  createdAt       DateTime  @default(now())
+}

@@ -1,0 +1,134 @@
+      {/* Main Content Area */}
+      <Box sx={{ 
+        flexGrow: 1, 
+        display: 'flex', 
+        flexDirection: 'column',
+        ml: isMobile ? 0 : sidebarOpen ? '250px' : 0, 
+        transition: 'margin 0.3s ease'
+      }}>
+        {/* AdminLTE Header */}
+        <AppBar
+          position="static"
+          elevation={0}
+          sx={{
+            bgcolor: 'white',
+            borderBottom: `1px solid ${COLORS.light}`,
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+          }}
+        >
+          <Toolbar sx={{ justifyContent: 'space-between', py: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <IconButton
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                sx={{ mr: 2, color: COLORS.dark }}
+              >
+                <MenuIcon />
+              </IconButton>
+              {session?.isAdmin ? (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: COLORS.dark }}>
+                    Admin Dashboard
+                  </Typography>
+                  <Select
+                    value={session.currentStoreId || ''}
+                    onChange={(e) => {
+                      const newSession = {
+                        ...session,
+                        currentStoreId: e.target.value
+                      };
+                      setSession(newSession);
+                      localStorage.setItem('session', JSON.stringify(newSession));
+                    }}
+                    size="small"
+                    sx={{ minWidth: 200 }}
+                  >
+                    {session.stores.map((store) => (
+                      <MenuItem key={store.id} value={store.id}>
+                        {store.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </Box>
+              ) : (
+                <Box>
+                  <Typography variant="h5" sx={{
+                    fontWeight: 'bold',
+                    color: COLORS.dark,
+                    background: `linear-gradient(45deg, ${COLORS.primary}, ${COLORS.info})`,
+                    backgroundClip: 'text',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent'
+                  }}>
+                    Shopify Insights Dashboard
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: COLORS.gray }}>
+                    Multi-tenant analytics platform
+                    {session?.apiKey &&(
+                      <>
+                      <br />
+                      store: {session.apiKey}
+                      </>
+                    )}
+                    
+                  </Typography>                
+                </Box>
+              )}
+            </Box>
+
+            <Stack direction="row" spacing={2} alignItems="center">
+              {session ? (
+                <>
+                  <Chip
+                    icon={<PersonIcon />}
+                    label={session.email}
+                    variant="outlined"
+                    sx={{ borderColor: COLORS.primary, color: COLORS.primary }}
+                  />
+                  <Button
+                    variant="outlined"
+                    startIcon={<RefreshIcon />}
+                    onClick={() => fetchAll()}
+                    sx={{ borderColor: COLORS.success, color: COLORS.success }}
+                  >
+                    Refresh
+                  </Button>
+                  <Button
+                    variant="contained"
+                    startIcon={<TrendingUpIcon />}
+                    onClick={handleIngest}
+                    disabled={ingesting}
+                    sx={{
+                      background: `linear-gradient(45deg, ${COLORS.warning}, ${COLORS.orange})`,
+                      '&:hover': {
+                        background: `linear-gradient(45deg, ${COLORS.orange}, ${COLORS.warning})`,
+                      }
+                    }}
+                  >
+                    {ingesting ? 'Ingesting...' : 'Ingest Data'}
+                  </Button>
+                  <Button
+                    color="error"
+                    variant="outlined"
+                    startIcon={<LogoutIcon />}
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  variant="contained"
+                  onClick={() => setShowLogin(true)}
+                  sx={{
+                    background: `linear-gradient(45deg, ${COLORS.primary}, ${COLORS.info})`,
+                    '&:hover': {
+                      background: `linear-gradient(45deg, ${COLORS.info}, ${COLORS.primary})`,
+                    }
+                  }}
+                >
+                  Sign In
+                </Button>
+              )}
+            </Stack>
+          </Toolbar>
+        </AppBar>
