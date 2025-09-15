@@ -22,7 +22,7 @@ app.use(cors({
   methods: ["GET", "POST", "PUT", "DELETE"]
 }));
 
-app.use(cors(corsOptions));
+//app.use(cors(corsOptions));
 
 // Logging middleware
 app.use(logger('dev'));
