@@ -30,7 +30,6 @@ A comprehensive multi-tenant analytics platform for Shopify stores, providing re
 - **Node.js** with Express.js
 - **PostgreSQL** database with Prisma ORM
 - **Shopify API** integration
-- **Redis** (optional) for caching
 - **Webhook processing** for real-time sync
 
 ### Frontend
