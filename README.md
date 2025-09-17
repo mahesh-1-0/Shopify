@@ -49,7 +49,7 @@ A comprehensive multi-tenant analytics platform for Shopify stores, providing re
 
 ### 1. Clone the Repository
 ```bash
-git clone <repository-url>
+git clone https://github.com/mahesh-1-0/Shopify.git
 cd shopify-insights-platform
 ```
 
