@@ -218,7 +218,7 @@ For support and questions:
 - Check the documentation
 - Review the API endpoints
 
-## 🔮 Roadmap
+## 🔮 Future Roadmap
 
 - [ ] Advanced segmentation and customer cohorts
 - [ ] Predictive analytics and forecasting
@@ -229,4 +229,4 @@ For support and questions:
 
 ---
 
-Built with ❤️ for Shopify merchants and agencies.
+Built with ❤️ 
